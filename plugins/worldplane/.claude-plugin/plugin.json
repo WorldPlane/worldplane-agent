@@ -1,7 +1,7 @@
 {
   "name": "worldplane",
   "displayName": "WorldPlane",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Integrate WorldPlane into your Unreal Engine 5.8 game, keep its plugins up to date, and run your studio's zones: builds, deploys, status, usage.",
   "author": {
     "name": "Artisan Gameworks",
