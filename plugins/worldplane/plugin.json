@@ -1,0 +1,36 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "worldplane",
+  "version": "0.1.0",
+  "description": "Integrate WorldPlane into your Unreal Engine 5.8 game, keep its plugins up to date, and run your studio's zones: builds, deploys, status, usage.",
+  "author": {
+    "name": "Artisan Gameworks",
+    "url": "https://worldplane.net"
+  },
+  "homepage": "https://worldplane.net/docs/agents",
+  "repository": "https://github.com/WorldPlane/worldplane-agent",
+  "license": "LicenseRef-WorldPlane",
+  "keywords": [
+    "worldplane",
+    "unreal",
+    "unreal-engine",
+    "mmo",
+    "multiplayer",
+    "dedicated-server",
+    "game-server"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "WorldPlane",
+        "shortDescription": "Run your Unreal game's servers as one seamless world",
+        "longDescription": "WorldPlane hosts an Unreal Engine 5.8 game as zones: several dedicated servers share one seamless world, and players connect through one gateway. This plugin teaches Codex to integrate the WorldPlane plugins into your game, upgrade them, and run your studio's projects, builds and zones.",
+        "developerName": "Artisan Gameworks",
+        "websiteURL": "https://worldplane.net",
+        "privacyPolicyURL": "https://worldplane.net/privacy",
+        "termsOfServiceURL": "https://worldplane.net/terms",
+        "brandColor": "#05060a"
+      }
+    }
+  }
+}

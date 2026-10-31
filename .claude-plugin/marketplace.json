@@ -1,0 +1,17 @@
+{
+  "name": "worldplane",
+  "description": "WorldPlane's plugin for Claude Code",
+  "owner": {
+    "name": "Artisan Gameworks",
+    "url": "https://worldplane.net"
+  },
+  "plugins": [
+    {
+      "name": "worldplane",
+      "source": "./plugins/worldplane",
+      "description": "Integrate WorldPlane into your Unreal Engine 5.8 game, keep its plugins up to date, and run your studio's zones.",
+      "category": "development",
+      "homepage": "https://worldplane.net/docs/agents"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+WorldPlane agent plugin and skill
+Copyright (c) 2026 Artisan Gameworks Inc. All rights reserved.
+
+The files in this repository (the WorldPlane plugin for Claude Code and Codex,
+its skills, reference documents and helper scripts, and the packaged skill in
+dist/) are proprietary to Artisan Gameworks Inc. They are not open source.
+
+You may download, install and use them, and change them for your own use, to
+integrate WorldPlane into your own games and to operate your own WorldPlane
+account, with Claude Code, OpenAI Codex or another coding agent. You may keep a
+copy, changed or not, in your own project's repository for your own team.
+
+You may not otherwise copy, publish, redistribute, sublicense or sell them, or
+any changed version of them.
+
+Using the WorldPlane service is governed by the WorldPlane Terms of Service at
+https://worldplane.net/terms.
+
+THE FILES ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL ARTISAN
+GAMEWORKS INC. BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
+THE FILES OR THEIR USE.
