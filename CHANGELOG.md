@@ -2,6 +2,10 @@
 
 Each version of the WorldPlane plugin for Claude Code and Codex, and of the `worldplane` skill inside it, newest first. Every version is also a tag (`v0.1.0`), so its files stay available.
 
+## 0.2.1 (2026-10-31)
+
+- Codex finds the WorldPlane MCP server: its entry in `mcp.json` is only the type and URL. Codex 0.165 dropped an entry with the OpenAI `auth` block, and finds OAuth by itself.
+
 ## 0.2.0 (2026-10-31)
 
 - The plugin adds WorldPlane's MCP server, `https://app.worldplane.net/mcp`, for Claude Code (`.mcp.json`) and Codex (`mcp.json`). Sign in once in the browser (Claude Code: `/mcp`; Codex: `codex mcp login worldplane`), choose what the agent may do and, if you like, the one organisation or project it may touch. Disconnect it any time in the panel.

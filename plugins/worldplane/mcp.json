@@ -3,15 +3,7 @@
   "mcpServers": {
     "worldplane": {
       "type": "streamable-http",
-      "url": "https://app.worldplane.net/mcp",
-      "extensions": {
-        "com.openai": {
-          "auth": {
-            "type": "oauth",
-            "client": { "mode": "cimd" }
-          }
-        }
-      }
+      "url": "https://app.worldplane.net/mcp"
     }
   }
 }
