@@ -2,6 +2,12 @@
 
 Each version of the WorldPlane plugin for Claude Code and Codex, and of the `worldplane` skill inside it, newest first. Every version is also a tag (`v0.1.0`), so its files stay available.
 
+## 0.2.0 (2026-10-31)
+
+- The plugin adds WorldPlane's MCP server, `https://app.worldplane.net/mcp`, for Claude Code (`.mcp.json`) and Codex (`mcp.json`). Sign in once in the browser (Claude Code: `/mcp`; Codex: `codex mcp login worldplane`), choose what the agent may do and, if you like, the one organisation or project it may touch. Disconnect it any time in the panel.
+- Its tools read projects, environments, zone status and events, builds, usage and spend and the audit log, and create environments, upload builds (through a short-lived link, not the conversation), deploy, roll back, stop and wake zones and set secrets. The agent still asks you first before anything that costs money or disconnects players.
+- The `worldplane` skill prefers the tools when they are there, and keeps the CLI and the API for archives over 5 GiB and for agents without MCP.
+
 ## 0.1.2 (2026-10-31)
 
 - The plugin has an icon, and its Codex listing has a short description and starter prompts.

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "worldplane": {
+      "type": "http",
+      "url": "https://app.worldplane.net/mcp"
+    }
+  }
+}

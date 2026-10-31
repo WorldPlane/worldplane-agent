@@ -1,11 +1,11 @@
 ---
 name: worldplane
-description: Work with WorldPlane, the multi-server MMO backend for Unreal Engine 5.8 (app.worldplane.net), in two ways. (1) Integrate WorldPlane into a studio's own Unreal game with the WorldPlane and WorldPlaneGAS plugins - install and enable them, set up Iris and the config, add a Linux server target, run worldplane check, and make game code work across servers - handoffs and actors crossing borders, player state, ghosts, damage, calls and GAS effects on another server's entity, replacing NetMulticast, relevancy, spawning, the zone's GameState; run a zone locally, package the server, and read WP_ log lines; upgrade the plugins, the CLI and this skill to the latest versions. Use for requests like "integrate WorldPlane into my Unreal game", "make this actor work across WorldPlane servers", "fix the worldplane check findings", "upgrade WorldPlane" or "why does my NPC reset at the border". (2) Run the studio's account through the worldplane CLI or HTTP API - create tenants, projects or environments, upload (push) a packaged Linux server build, deploy, roll back, stop or wake a zone, set environment secrets, add members or API keys, or check a zone's status, a build's state, this month's usage and spend, or the audit log.
+description: Work with WorldPlane, the multi-server MMO backend for Unreal Engine 5.8 (app.worldplane.net), in two ways. (1) Integrate WorldPlane into a studio's own Unreal game with the WorldPlane and WorldPlaneGAS plugins - install and enable them, set up Iris and the config, add a Linux server target, run worldplane check, and make game code work across servers - handoffs and actors crossing borders, player state, ghosts, damage, calls and GAS effects on another server's entity, replacing NetMulticast, relevancy, spawning, the zone's GameState; run a zone locally, package the server, and read WP_ log lines; upgrade the plugins, the CLI and this skill to the latest versions. Use for requests like "integrate WorldPlane into my Unreal game", "make this actor work across WorldPlane servers", "fix the worldplane check findings", "upgrade WorldPlane" or "why does my NPC reset at the border". (2) Run the studio's account through WorldPlane's MCP tools, the worldplane CLI or the HTTP API - create tenants, projects or environments, upload (push) a packaged Linux server build, deploy, roll back, stop or wake a zone, set environment secrets, add members or API keys, or check a zone's status, a build's state, this month's usage and spend, or the audit log.
 ---
 
 # WorldPlane
 
-WorldPlane hosts a studio's Unreal Engine 5.8 game servers as zones: several dedicated servers share one seamless world, players and NPCs are handed between them at area borders, and players connect through one gateway. Its control plane is at **https://app.worldplane.net**: the panel (web UI) and the HTTP API (`/v1/...`) share that origin. The `worldplane` CLI calls the same API.
+WorldPlane hosts a studio's Unreal Engine 5.8 game servers as zones: several dedicated servers share one seamless world, players and NPCs are handed between them at area borders, and players connect through one gateway. Its control plane is at **https://app.worldplane.net**: the panel (web UI) and the HTTP API (`/v1/...`) share that origin. The `worldplane` CLI calls the same API, and WorldPlane's MCP server (`https://app.worldplane.net/mcp`, which this plugin adds) wraps it in tools.
 
 This skill covers two jobs:
 - **Integrating a game** with the Unreal plugins: start at [Integrate a game](#integrate-a-game-unreal) below.
@@ -72,11 +72,17 @@ For "upgrade WorldPlane", "update the plugin" or "are we on the latest version",
    Reading things (status, builds, usage, audit) needs no confirmation.
 3. **On a 402, stop.** Tell the user what the error says, usually that the tenant needs an active WorldPlane subscription. Owners and the billing role subscribe in the panel: https://app.worldplane.net, the tenant's billing ("Subscribe"). Don't retry, and don't try to subscribe for them. A 402 can also mean deploys are on hold for an unpaid invoice, or that the tenant's monthly spend limit is reached. Each needs the user in the panel's billing.
 4. **Errors are sentences meant for people:** `{"error": "..."}`. Show the user the sentence. 403 means the caller's role does not allow it (see Roles below). 409 usually says what has to happen first.
-5. **Never sign up, sign in, or type a password for the user.** If there is no session or key, ask the user to run `worldplane login` themselves, or to put an API key in `WORLDPLANE_KEY`.
+5. **Never sign up, sign in, or type a password for the user.** That includes the MCP server's sign-in page in the browser: the user signs in there and chooses what you may do. If there is no sign-in at all, ask the user to connect the MCP server (below), run `worldplane login` themselves, or put an API key in `WORLDPLANE_KEY`.
 
 ## Authentication
 
-The API takes `Authorization: Bearer <secret>`. The secret is either:
+**The MCP server signs in with OAuth.** This plugin adds the server `worldplane` at `https://app.worldplane.net/mcp`. Its tools appear once the user has signed in, once:
+- **Claude Code:** `/mcp`, choose `worldplane` (`plugin:worldplane:worldplane`), Authenticate;
+- **Codex:** `codex mcp login worldplane`, or Authenticate in `/mcp`.
+
+A browser opens on WorldPlane's sign-in page. The user enters their password (and authenticator code), and picks what the agent may do (everything they can do except billing, deleting, keys and members; deploy and operate; develop; or read only) and, if they like, the one organisation or project it may touch. Never sign in for them. They can disconnect the agent in the panel at any time (home page, Connected agents). The tool `whoami` says who you act as and how far you may go; a tool's 403 means this sign-in doesn't allow it, so tell the user, who can sign in again with a wider choice. What you do is written to the audit log as `agent:<their e-mail> (<program>)`.
+
+Without the MCP server, the API takes `Authorization: Bearer <secret>`. The secret is either:
 - **a session token**, from `worldplane login`. It lasts 30 days and acts as the person, with their roles in every tenant they belong to;
 - **an API key** (`wpk_...`). An owner or admin creates it in the panel or with `POST /v1/tenants/{tenant}/keys`. It has one role on one tenant, or on one project. It is shown once. A key cannot create tenants, and can never be an owner.
 
@@ -88,7 +94,25 @@ Check who you are with `GET /v1/me`. It returns the account (null for a key), `a
 
 ## How to call WorldPlane
 
-**Prefer the CLI** when `worldplane` is on the PATH (`worldplane --version`). If it isn't, the user can download it from the panel (Engine integrations, Command-line tool) or, with their go-ahead, you can fetch it with `GET /v1/downloads/cli/{windows|linux}` (x86-64, any signed-in account or key; `chmod +x` on Linux). It covers:
+**Prefer the MCP tools** when they are there (the `worldplane` server's tools, such as `whoami` and `list_projects`). They cover:
+
+| Task | Tool |
+|---|---|
+| Who you are, what you may do | `whoami` |
+| Tenants and projects; regions | `list_projects`; `list_regions` |
+| Environments; a zone's status, gateway and players | `list_environments`; `get_zone_status` |
+| A running zone's events and the plugin's warnings | `get_zone_events` |
+| Builds | `list_builds`, `get_build` |
+| Secrets (names only); set one | `list_secrets`; `set_secret` |
+| Usage and spend; the audit log | `get_usage`; `get_audit_log` |
+| A new environment | `create_environment` |
+| Upload a build | `start_build_upload`, then a PUT outside the conversation, then `finish_build_upload` ([Upload a build](#upload-a-build)) |
+| Deploy, roll back | `deploy`, `roll_back` |
+| Stop, wake | `stop_zone`, `wake_zone` |
+
+Errors come back as the API's sentence with its status, such as `... (402)`; the rules below apply to them as to the API's. The tools have nothing for members, API keys, billing or deleting: those stay with the user, in the panel. Rule 2 applies to the acting tools just as to the CLI: say what will happen and wait for a yes. Your client may ask the user too.
+
+**Otherwise use the CLI** when `worldplane` is on the PATH (`worldplane --version`). If it isn't, the user can download it from the panel (Engine integrations, Command-line tool) or, with their go-ahead, you can fetch it with `GET /v1/downloads/cli/{windows|linux}` (x86-64, any signed-in account or key; `chmod +x` on Linux). It covers:
 
 | Task | Command |
 |---|---|
@@ -105,7 +129,7 @@ Check who you are with `GET /v1/me`. It returns the account (null for a key), `a
 
 From Git Bash, set `MSYS_NO_PATHCONV=1` before passing `/Game/...` maps, or the shell rewrites them into Windows paths, which the API refuses.
 
-**The CLI has no commands for status, listing, usage, audit, stop, members or keys. For these, and when the CLI is missing, use HTTP.** Use the helper script, which finds the URL and token as above and never prints the token:
+**The CLI has no commands for status, listing, usage, audit, stop, members or keys. For these, without the MCP tools, and when the CLI is missing, use HTTP.** Use the helper script, which finds the URL and token as above and never prints the token:
 
 ```sh
 # bash / zsh (needs curl)
@@ -145,15 +169,21 @@ Below, `T/P/E` is tenant/project/environment, and `$B` is `/v1/tenants/T/project
 
 ### Upload a build
 1. Check the zip first: `worldplane build check LinuxServer.zip`. The zip is the packaged `LinuxServer` folder: one `<Name>Server.sh`, an x86-64 Linux server binary, the WorldPlane plugin, and no files that look like secrets.
-2. Confirm with the user, then `worldplane build push --project T/P --label <version> <zip>`. It waits through `checking` → (`imaging` → `starting` on hosted zones) → `ready`. It exits non-zero with the reason if the build is `rejected` or `failed`.
-3. Without the CLI: `POST $B/builds {"label","kind":"archive"}`, then upload the archive (see Builds in the reference: on app.worldplane.net it goes to storage in parts), then poll `GET $B/builds/{id}` every few seconds until the state is no longer `uploading`, `checking`, `imaging` or `starting`.
-4. `rejected` gives the reason in plain words, including the server's last log lines if it stopped during its first start. Relay it. `failed` (imaging, or no game node free) can be retried without another upload, after asking: `POST $B/builds/{id}/image`.
+2. **With the MCP tools** (up to 5 GiB), after the user's yes:
+   1. `start_build_upload` with `tenant`, `project`, `label` and the zip's `size` in bytes. It registers the build and answers an `upload.url`, good for two hours.
+   2. PUT the zip there yourself, outside the conversation: `curl --fail -T LinuxServer.zip "<upload.url>"` (`curl.exe` in PowerShell). The archive never goes through MCP. The URL is a permission for this one build: don't paste it anywhere else.
+   3. `finish_build_upload`, then `get_build` every 10 seconds until the state is `ready`, `rejected` or `failed`.
+
+   A zip over 5 GiB goes up with the CLI, as below.
+3. Otherwise, confirm with the user, then `worldplane build push --project T/P --label <version> <zip>`. It waits through `checking` → (`imaging` → `starting` on hosted zones) → `ready`. It exits non-zero with the reason if the build is `rejected` or `failed`.
+4. Without the CLI: `POST $B/builds {"label","kind":"archive"}`, then upload the archive (see Builds in the reference: on app.worldplane.net it goes to storage in parts), then poll `GET $B/builds/{id}` every few seconds until the state is no longer `uploading`, `checking`, `imaging` or `starting`.
+5. `rejected` gives the reason in plain words, including the server's last log lines if it stopped during its first start. Relay it. `failed` (imaging, or no game node free) can be retried without another upload, after asking: `POST $B/builds/{id}/image`.
 
 ### Deploy, roll back
 1. `GET $B/builds/{id}` must be `ready` (otherwise 409).
 2. Tell the user what will happen ("deploy build X (label) to T/P/E; servers start and are billed; players on it now are disconnected") and wait for a yes.
-3. `worldplane deploy T/P/E <id>`, or `POST $B/environments/E/deploy {"build":"<id>"}`. The answer is `{"zone": {...}}`.
-4. Rolling back is a deploy of an older `ready` build.
+3. The `deploy` tool, `worldplane deploy T/P/E <id>`, or `POST $B/environments/E/deploy {"build":"<id>"}`. The answer has the zone.
+4. Rolling back is a deploy of an older `ready` build. The `roll_back` tool finds the one deployed before the current build by itself.
 5. A 409 that names a missing secret means a server argument uses `{env:NAME}` and the environment has no `NAME`. Ask the user to set it (`worldplane env secret set T/P/E NAME`; the user types the value). Don't invent a value.
 
 ### Status, logs and players

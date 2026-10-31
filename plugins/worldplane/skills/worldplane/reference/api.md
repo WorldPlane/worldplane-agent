@@ -166,3 +166,17 @@ No studio token. These are per environment.
 | `POST /v1/play/T/P/E/accounts` | `{"email","name","password"}` | `{"player":{"id","name"},"token","expires"}`: a player token valid for an hour |
 | `POST /v1/play/T/P/E/sessions` | `{"email","password"}` | as above. 401 when wrong, 429 when locked out |
 | `POST /v1/play/T/P/E/wake` | | 202 `{"state":"starting"}` while waking or not ready; 200 `{"state":"running","gateway":"host:port"}`; 409 if not deployed; 402 if a sleeping zone's tenant has no subscription; 404 for an unknown environment |
+
+## Agents: OAuth and the MCP server
+
+Agents sign in with OAuth 2.1 and act through `POST /mcp` (Streamable HTTP, JSON answers, MCP 2025-03-26 to 2026-07-28). Clients find everything from the 401 `/mcp` answers without a token; you don't call these yourself.
+
+| Path | What |
+|---|---|
+| `GET /.well-known/oauth-protected-resource/mcp` | the resource (`https://app.worldplane.net/mcp`), its issuer and scopes (`admin`, `operator`, `developer`, `viewer`: the cap the user picks) |
+| `GET /.well-known/oauth-authorization-server` | the endpoints: `/oauth/authorize`, `/oauth/token`, `/oauth/register`, `/oauth/revoke`; PKCE `S256`; client ID metadata documents and dynamic registration |
+| `POST /mcp` | the tools (SKILL.md, How to call WorldPlane). Takes an OAuth access token, or an API key (`Authorization: Bearer wpk_...`), never a session token |
+| `PUT /v1/uploads/{token}` | the upload link `start_build_upload` gives on a control plane without S3: one archive for one build, no other authorization. On app.worldplane.net the link is a presigned S3 URL instead |
+| `GET /v1/me/agents`, `DELETE /v1/me/agents/{id}` | the person's connected agents, and disconnecting one (a signed-in person only) |
+
+An agent's access token lasts an hour and works only at `/mcp`; the client refreshes it. What an agent does is in the audit log as `agent:<email> (<program>)`; `agent.connect` and `agent.disconnect` record the sign-ins themselves.
