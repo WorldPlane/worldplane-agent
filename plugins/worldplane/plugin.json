@@ -1,13 +1,13 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "worldplane",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Integrate WorldPlane into your Unreal Engine 5.8 game, keep its plugins up to date, and run your studio's zones: builds, deploys, status, usage.",
   "author": {
     "name": "Artisan Gameworks",
     "url": "https://worldplane.net"
   },
-  "homepage": "https://worldplane.net/docs/agents",
+  "homepage": "https://worldplane.net",
   "repository": "https://github.com/WorldPlane/worldplane-agent",
   "license": "LicenseRef-WorldPlane",
   "keywords": [
@@ -32,6 +32,7 @@
           "Write"
         ],
         "websiteURL": "https://worldplane.net",
+        "supportURL": "https://worldplane.net/support",
         "privacyPolicyURL": "https://worldplane.net/privacy",
         "termsOfServiceURL": "https://worldplane.net/terms",
         "defaultPrompt": [

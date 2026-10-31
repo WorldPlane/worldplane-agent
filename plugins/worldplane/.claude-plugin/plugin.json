@@ -1,16 +1,19 @@
 {
   "name": "worldplane",
   "displayName": "WorldPlane",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Integrate WorldPlane into your Unreal Engine 5.8 game, keep its plugins up to date, and run your studio's zones: builds, deploys, status, usage.",
   "author": {
     "name": "Artisan Gameworks",
     "url": "https://worldplane.net"
   },
-  "homepage": "https://worldplane.net/docs/agents",
+  "homepage": "https://worldplane.net",
   "repository": "https://github.com/WorldPlane/worldplane-agent",
   "license": "LicenseRef-WorldPlane",
+  "documentationUrl": "https://worldplane.net/docs/agents",
+  "supportUrl": "https://worldplane.net/support",
   "privacyPolicyUrl": "https://worldplane.net/privacy",
+  "termsOfServiceUrl": "https://worldplane.net/terms",
   "icon": "./assets/icon.png",
   "keywords": [
     "worldplane",
