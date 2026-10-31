@@ -2,6 +2,10 @@
 
 Each version of the WorldPlane plugin for Claude Code and Codex, and of the `worldplane` skill inside it, newest first. Every version is also a tag (`v0.1.0`), so its files stay available.
 
+## 0.1.2 (2026-10-31)
+
+- The plugin has an icon, and its Codex listing has a short description and starter prompts.
+
 ## 0.1.1 (2026-10-31)
 
 - For WorldPlane plugins 0.4.0: `PlacedSpawnerClasses` is optional, since a placed actor that spawns with itself as the Owner is found and run once per zone. The skill explains `WP_UNLISTED_SPAWNER`, `WP_SPAWNERS_FOUND` and `WP_FIXTURE_SPAWNS`, and the `WPNotSpawner` tag that keeps an actor running on every server.
