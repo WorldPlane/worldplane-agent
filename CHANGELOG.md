@@ -2,6 +2,10 @@
 
 Each version of the WorldPlane plugin for Claude Code and Codex, and of the `worldplane` skill inside it, newest first. Every version is also a tag (`v0.1.0`), so its files stay available.
 
+## 0.2.4 (2026-11-01)
+
+- The skill's troubleshooting covers a client whose controller has no player at login: gateways on plugins 0.4.1 and 0.4.2 sent every client every controller (fixed in 0.4.3), and how to see which controllers a client took.
+
 ## 0.2.3 (2026-10-31)
 
 - The plugin's Codex listing is in the Developer Tools category, one OpenAI's plugin directory accepts.
