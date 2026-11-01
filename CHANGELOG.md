@@ -2,6 +2,10 @@
 
 Each version of the WorldPlane plugin for Claude Code and Codex, and of the `worldplane` skill inside it, newest first. Every version is also a tag (`v0.1.0`), so its files stay available.
 
+## 0.2.3 (2026-10-31)
+
+- The plugin's Codex listing is in the Developer Tools category, one OpenAI's plugin directory accepts.
+
 ## 0.2.2 (2026-10-31)
 
 - The plugin's listing links to its documentation, support, privacy and terms pages, and its README says where your data goes.
