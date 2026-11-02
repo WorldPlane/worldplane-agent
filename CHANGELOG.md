@@ -2,6 +2,11 @@
 
 Each version of the WorldPlane plugin for Claude Code and Codex, and of the `worldplane` skill inside it, newest first. Every version is also a tag (`v0.1.0`), so its files stay available.
 
+## 0.2.12 (2026-11-02)
+
+- A `fleet_member_failed` event in a zone's history (`get_zone_events`, `GET .../coordinator/v1/history`) now carries the dead server's or gateway's last log lines in `lines`, with the game's crash callstack when it crashed; the API reference describes it. Needs the control plane deployed on or after this day.
+- Troubleshooting: the gateway dying with exit 139 when a player gains an item during play, and the rule behind it in the cross-server reference: replication callbacks run on the gateway for every player, in the server's write order, so one that reads another replicated object before its state arrived must tolerate it. How to symbolize a Linux Shipping stack from the build's `.debug` file.
+
 ## 0.2.11 (2026-11-02)
 
 - Says plainly where the WorldPlane Unreal plugins come from: they come with the Studio plan, and only a member of a subscribed organisation can download them, from the organisation's page in the panel or the same download in the API. This plugin and its skill don't contain them, and the MCP server doesn't serve them. The agent asks you to download the zip from the panel (the only way with the MCP server alone), or fetches it through the API with your go-ahead. On a 402 it stops and sends you to the panel to subscribe, and it never takes the plugins from anywhere else.

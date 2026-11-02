@@ -154,7 +154,7 @@ or ends as `rejected` (with a plain `reason`, including a first start's last log
 - `fleet`: `{provider, fleets, endpoints, error, players}`;
 - `servers`;
 - `zone`: the area map;
-- `history?since=<seconds>`: `{now, events, metrics, snapshots}`. Events have `kind`, `detail`, `server` and `value`; for example, `fleet_member_failed` is a member that died and was replaced, with its exit summary;
+- `history?since=<seconds>`: `{now, events, metrics, snapshots}`. Events have `kind`, `detail`, `server` and `value`; for example, `fleet_member_failed` is a member that died and was replaced, with its exit summary in `detail` and, in `lines`, its last log lines (oldest first, as the provider read them before replacing it; the game's crash callstack when it crashed, since there is no log endpoint);
 - `replay?from=&limit=`, `routes`, `entities/{id}`.
 
 ## Players (for the game's launcher or login service)
