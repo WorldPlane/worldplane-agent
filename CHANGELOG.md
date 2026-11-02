@@ -2,6 +2,10 @@
 
 Each version of the WorldPlane plugin for Claude Code and Codex, and of the `worldplane` skill inside it, newest first. Every version is also a tag (`v0.1.0`), so its files stay available.
 
+## 0.2.6 (2026-11-01)
+
+- Structs with their own `NetSerialize` under Iris: Iris replicates them by reflection, so every wire member must be a `UPROPERTY` and `TMap`/`TSet` members don't travel (Exordium's tracking selection arrived as zeros). The integration reference has the rule (§2), and `worldplane check` finds such structs: `iris-custom-struct`, an error per struct naming the members declared without `UPROPERTY` and the `UPROPERTY` map and set members, third-party plugins included. No `--fix`: a `UPROPERTY()` on a member of a type the header tool can't reflect breaks the build. The check is in the CLI from the panel's download of 2026-11-01 on.
+
 ## 0.2.5 (2026-11-01)
 
 - The skill's troubleshooting covers an equipped weapon or other attached actor that disappears behind the gateway when the player walks away from where it was equipped, and comes back when they return (fixed in plugins 0.4.4).
