@@ -2,6 +2,10 @@
 
 Each version of the WorldPlane plugin for Claude Code and Codex, and of the `worldplane` skill inside it, newest first. Every version is also a tag (`v0.1.0`), so its files stay available.
 
+## 0.2.8 (2026-11-01)
+
+- The skill's troubleshooting covers predicted gameplay effects or abilities that stay on a client after the server ended them, for every player but the first to connect through the gateway (fixed in plugins 0.4.6: the gateway re-owns relayed prediction keys to their client).
+
 ## 0.2.7 (2026-11-01)
 
 - The troubleshooting covers the `LogIris: Warning: Generating descriptor for struct ... that has custom serialization` line that marks a struct Iris replicates by reflection (see 0.2.6).
