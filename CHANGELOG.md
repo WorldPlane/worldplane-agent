@@ -2,6 +2,10 @@
 
 Each version of the WorldPlane plugin for Claude Code and Codex, and of the `worldplane` skill inside it, newest first. Every version is also a tag (`v0.1.0`), so its files stay available.
 
+## 0.2.10 (2026-11-02)
+
+- Hosted servers and gateways now receive environment secrets as process variables, including SDK credentials read outside Unreal INI settings. Updated guidance explains deployment/rotation and preserves legacy argument substitution.
+
 ## 0.2.9 (2026-11-02)
 
 - Documents paired source/native-library updates for WorldPlane 0.4.7 and smaller customer plugin downloads.

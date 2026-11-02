@@ -215,7 +215,7 @@ Below, `T/P/E` is tenant/project/environment, and `$B` is `/v1/tenants/T/project
 - `GET /v1/tenants/T/audit?limit=100&before=<seq>`: who did what, newest first. Owners and admins only.
 
 ### Secrets
-Servers get an environment secret as `{env:NAME}` in their arguments, such as `--server-arg=-ApiToken={env:API_TOKEN}`. The value is set by the user: have them run `worldplane env secret set T/P/E NAME`, which asks for it unshown. Never ask for the value in chat, and never put it in a command. Listing (`worldplane env secret list`, `GET .../secrets`) shows names and times, never values. Changes take effect at the next deploy.
+Hosted servers and gateways get each environment secret as a process variable under its own name at the next deploy or wake. In Unreal use `FPlatformMisc::GetEnvironmentVariable(TEXT("API_TOKEN"))`; no server argument is needed. Keep values out of packaged INIs. Legacy `{env:NAME}` argument substitution is available for integrations that require it; it places the value in launch arguments. Local processes retain their inherited environment. The value is set by the user: have them run `worldplane env secret set T/P/E NAME`, which asks for it unshown. Never ask for the value in chat, and never put it in a command. Listing (`worldplane env secret list`, `GET .../secrets`) shows names and times, never values. Changes take effect at the next deploy.
 
 ### Team and CI keys
 - Members: `GET/POST /v1/tenants/T/members`, `DELETE /v1/tenants/T/members/{email}` (owner or admin; only owners grant or remove owners). Someone without an account is invited, and gets the role when they sign up.
