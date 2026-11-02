@@ -4,11 +4,15 @@
 
 This plugin teaches Claude Code or OpenAI Codex to work with WorldPlane for your studio:
 
-- **Integrate WorldPlane into your Unreal game.** The agent reads your project, installs and enables the WorldPlane plugins, sets up the config and a Linux server target, runs `worldplane check --fix`, and makes your game code work across servers with the smallest change.
+- **Integrate WorldPlane into your Unreal game.** The agent reads your project, installs and enables the WorldPlane plugins, sets up the config and a Linux server target, runs `worldplane check --fix`, and makes your game code work across servers with the smallest change. The Unreal plugins aren't in this repository: see [The Unreal plugins](#the-unreal-plugins).
 - **Keep it up to date.** "Upgrade WorldPlane" brings this plugin, the `worldplane` CLI and your project's WorldPlane plugins to the latest versions, then works through what changed.
 - **Run your account.** Create projects and environments, upload Linux server builds, deploy and roll back, stop and wake zones, and read status, usage, spend and the audit log, through WorldPlane's MCP server (`https://app.worldplane.net/mcp`), which the plugin adds.
 
 It asks you before anything that costs money, disconnects players or replaces files, and it never prints or commits your token.
+
+## The Unreal plugins
+
+This plugin is free. It carries the agent's instructions, not WorldPlane's Unreal plugins (WorldPlane and WorldPlaneGAS). Those come with the WorldPlane Studio plan: once your organisation subscribes, any member downloads them from the organisation's overview in the [panel](https://app.worldplane.net) (Engine integrations, **Download plugin**). The agent installs the zip you download, or, when you've signed in with the `worldplane` CLI or set an API key, fetches the same zip from the API with your go-ahead. Without an active subscription that download is refused (402), and the agent sends you to the panel to subscribe. See https://worldplane.net/docs/unreal#get.
 
 ## Install
 

@@ -10,7 +10,7 @@ A server is part of a zone only when started with `-WPServerId=N` (`WorldPlane::
 
 ## 1. Install the plugins
 
-Subscribers download one zip with both plugins from the panel, or with `GET /v1/tenants/T/downloads/unreal-plugin` (see [api.md](api.md); 402 without a subscription). Copy the folders into the project's `Plugins/`, next to the `.uproject`:
+The plugins come with the Studio plan; they aren't published anywhere else, and this skill doesn't carry them. A member of a subscribed organisation downloads one zip with both plugins from the panel: `https://app.worldplane.net/#/panel/T`, Overview, Engine integrations, Unreal Engine 5.8, **Download plugin** (refused until the organisation subscribes). With a `worldplane login` session or an API key, `GET /v1/tenants/T/downloads/unreal-plugin` gives the same zip (see [api.md](api.md)). Without an active subscription it answers 402: stop, and send the user to that page to subscribe ([SKILL.md](../SKILL.md), Rules for game code, 6). Copy the folders into the project's `Plugins/`, next to the `.uproject`:
 
 ```
 MyGame/

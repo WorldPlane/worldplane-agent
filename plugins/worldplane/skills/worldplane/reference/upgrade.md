@@ -35,14 +35,14 @@ Reading versions needs no confirmation. Ask the user before replacing anything, 
 
 1. **Find the project and its versions.** The `.uproject`, `Plugins/WorldPlane/WorldPlane.uplugin` and, if present, `Plugins/WorldPlaneGAS/WorldPlaneGAS.uplugin`: note each `VersionName`. If `Plugins/WorldPlane` is missing, this is a new integration: follow [unreal-integration.md](unreal-integration.md) instead.
 2. **Check for local changes.** Run the project's version control status (`git status`, `svn status` or `p4 status`) on `Plugins/WorldPlane*`. If the studio changed plugin files, list them and ask before going on: the upgrade replaces them.
-3. **Download** with the user's go-ahead (a member of a subscribed tenant `T`; 402 without a subscription), to a temporary folder outside the project:
+3. **Get the download.** The plugins come only from a subscribed tenant `T` ([SKILL.md](../SKILL.md), Rules for game code, 6). Either the user downloads the zip from `https://app.worldplane.net/#/panel/T` (Overview, Engine integrations, **Download plugin**) and tells you where it is, which is the only way with the MCP server alone; or, with a `worldplane login` session or an API key and the user's go-ahead, you fetch it to a temporary folder outside the project:
    ```sh
    scripts/wp-api.sh -o /tmp/WorldPlane.zip GET /v1/tenants/T/downloads/unreal-plugin
    ```
    ```powershell
    scripts/wp-api.ps1 GET /v1/tenants/T/downloads/unreal-plugin -OutFile "$env:TEMP\WorldPlane.zip"
    ```
-   Unzip it there. It holds `WorldPlane/` and `WorldPlaneGAS/`.
+   A 402 means the tenant has no active subscription: stop, and send the user to that page to subscribe. Unzip the download in a temporary folder. It holds `WorldPlane/` and `WorldPlaneGAS/`.
 4. **Compare.** Read the new `VersionName`. Compare the new folders with the project's, leaving out `Binaries/Win64`, `Binaries/Linux`, `Intermediate`, `Saved` and `DerivedDataCache`. If nothing differs, tell the user the plugins are current and stop. Otherwise read the new `WorldPlane/CHANGELOG.md`, if the download has one, and list every entry newer than the installed version, with what each asks of the game.
 5. **Replace,** after the user agrees and **closes the Unreal editor** for this project (it holds the plugin's DLLs open). Delete the project's `Plugins/WorldPlane` and, if the project uses it, `Plugins/WorldPlaneGAS`, then copy the new folders in. Don't add `WorldPlaneGAS` to a project that didn't have it, unless the project uses GAS and the user wants it ([unreal-integration.md](unreal-integration.md)). Don't keep the old `Binaries` or `Intermediate`: the editor rebuilds them.
 6. **`worldplane check <project> --fix`.** Show the user its "Fixed" and "Still to do" lists, then work through what is left and through the changelog items that ask something of the game, following [cross-server.md](cross-server.md).

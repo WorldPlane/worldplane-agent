@@ -2,6 +2,10 @@
 
 Each version of the WorldPlane plugin for Claude Code and Codex, and of the `worldplane` skill inside it, newest first. Every version is also a tag (`v0.1.0`), so its files stay available.
 
+## 0.2.11 (2026-11-02)
+
+- Says plainly where the WorldPlane Unreal plugins come from: they come with the Studio plan, and only a member of a subscribed organisation can download them, from the organisation's page in the panel or the same download in the API. This plugin and its skill don't contain them, and the MCP server doesn't serve them. The agent asks you to download the zip from the panel (the only way with the MCP server alone), or fetches it through the API with your go-ahead. On a 402 it stops and sends you to the panel to subscribe, and it never takes the plugins from anywhere else.
+
 ## 0.2.10 (2026-11-02)
 
 - Hosted servers and gateways now receive environment secrets as process variables, including SDK credentials read outside Unreal INI settings. Updated guidance explains deployment/rotation and preserves legacy argument substitution.

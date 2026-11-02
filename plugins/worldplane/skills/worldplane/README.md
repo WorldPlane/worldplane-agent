@@ -3,7 +3,7 @@
 This skill teaches a coding agent two things.
 
 **Integrating WorldPlane into your Unreal game.** The agent reads your project first, then:
-- installs and enables the WorldPlane and WorldPlaneGAS plugins, and sets up `Build.cs`, `DefaultEngine.ini`, the plugin settings and a Linux server target;
+- installs the WorldPlane and WorldPlaneGAS plugins from your organisation's download, enables them, and sets up `Build.cs`, `DefaultEngine.ini`, the plugin settings and a Linux server target. The plugins aren't part of this skill: they come with the Studio plan, so your organisation needs an active subscription, and you or the agent download them from the panel or the API;
 - runs `worldplane check` (with `--fix` for the mechanical changes) and works through what is left;
 - makes your game code work across servers with the smallest change: what survives a handoff, calls and damage on another server's entity, GAS effects, multicasts, relevancy, spawning, the zone's GameState;
 - explains how to run a zone locally and package the Linux server, and reads the plugin's `WP_` log lines with you.
@@ -78,7 +78,7 @@ The agent never signs in for you. Pick one:
 
   A `developer` key on one project can upload, and deploy only to `dev` and `test`.
 
-Keep keys out of the repository. Using WorldPlane needs a subscription: subscribe in the panel's billing.
+Keep keys out of the repository. Using WorldPlane, and downloading its Unreal plugins, needs a subscription: subscribe in the panel's billing.
 
 ## Try it
 

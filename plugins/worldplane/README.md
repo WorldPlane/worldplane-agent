@@ -7,6 +7,8 @@
 
 The agent asks you first before anything that costs money, disconnects players or replaces files.
 
+This plugin doesn't contain the WorldPlane Unreal plugins. They come with the WorldPlane Studio plan: a member of a subscribed organisation downloads them from the panel (Engine integrations, **Download plugin**), and the agent installs that download or, with your go-ahead, fetches the same one from the API. Without a subscription it is refused (402). See https://worldplane.net/docs/unreal#get.
+
 ## Install
 
 Claude Code, in a terminal (2.1.292 or later; in a session, `/plugin install` with the same arguments):
