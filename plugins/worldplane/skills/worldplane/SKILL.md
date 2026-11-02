@@ -1,6 +1,6 @@
 ---
 name: worldplane
-description: Work with WorldPlane, the multi-server MMO backend for Unreal Engine 5.8 (app.worldplane.net), in two ways. (1) Integrate WorldPlane into a studio's own Unreal game with the WorldPlane and WorldPlaneGAS plugins - install and enable them, set up Iris and the config, add a Linux server target, run worldplane check, and make game code work across servers - handoffs and actors crossing borders, player state, ghosts, damage, calls and GAS effects on another server's entity, replacing NetMulticast, relevancy, spawning, the zone's GameState; run a zone locally, package the server, and read WP_ log lines; upgrade the plugins, the CLI and this skill to the latest versions. Use for requests like "integrate WorldPlane into my Unreal game", "make this actor work across WorldPlane servers", "fix the worldplane check findings", "upgrade WorldPlane" or "why does my NPC reset at the border". (2) Run the studio's account through WorldPlane's MCP tools, the worldplane CLI or the HTTP API - create tenants, projects or environments, upload (push) a packaged Linux server build, deploy, roll back, stop or wake a zone, set environment secrets, add members or API keys, or check a zone's status, a build's state, this month's usage and spend, or the audit log.
+description: Integrate WorldPlane into a studio Unreal Engine 5.8 game, upgrade its plugins/CLI/skill, or operate its hosted zones. Covers WorldPlane and WorldPlaneGAS installation, Iris/config/server targets, worldplane check, cross-server handoffs and ghosts, authority and persistence, RPCs/GAS effects, spawning and GameState, local runs, server packaging and WP_ log diagnosis. Use for game integration, border bugs, check findings and plugin upgrades. Also manage tenants, projects, environments, builds, deploys/rollbacks, stop/wake, secrets, members/API keys, status, usage/spend and audit through WorldPlane MCP, CLI or HTTP API at app.worldplane.net.
 ---
 
 # WorldPlane
@@ -27,7 +27,12 @@ The plugin does the work: most single-server game code runs across servers uncha
 | [reference/troubleshooting.md](reference/troubleshooting.md) | the plugin's `WP_` log lines and what to do about each |
 | [reference/upgrade.md](reference/upgrade.md) | upgrading this skill, the CLI and a project's plugins to the latest versions |
 
+The plugin includes a prebuilt native runtime. Update its source adapter and libraries together; do not rebuild Rust, restore internal tests, or add replacement connection/handoff policy in game code. Distributed source intentionally omits non-legal comments, including header documentation; use the published API reference and explicit editor tooltips. Tests, fixtures and internal debugging material are absent throughout the bundle. See the native-library contract in [unreal-integration.md](reference/unreal-integration.md).
+
 ### Rules for game code
+
+The standalone **WorldPlane Multiplayer Diagnostics** editor tool and `worldplane check --profile unreal` are covered in [reference/diagnostics.md](reference/diagnostics.md). They share the offline Rust scanner and preview/apply repair engine. Public diagnostics work without an account or WorldPlane runtime; keep general Unreal and WorldPlane readiness profiles separate.
+
 1. **Read before you change.** Find the `.uproject`, `Source/*/*.Build.cs`, the `*.Target.cs` files, `Config/DefaultEngine.ini` and `Config/DefaultGame.ini`, the GameMode, GameState, PlayerController, PlayerState, pawn and character classes, any ability system component, and where the game spawns actors, deals damage, saves, and calls `NetMulticast` RPCs. Say what you found before editing.
 2. **Make the smallest change that works.** Prefer settings over code, and one line (`WP_RUN_ON_OWNER`, `ForwardDamageToOwner`, `ForwardToOwner`) over restructuring. Don't add entity components (WorldPlane adds them), don't reformat files, and don't touch gameplay that doesn't cross servers.
 3. **Use only names that exist.** Every class, function, setting and log line in the references is in the plugin's public headers. If the game needs something they don't cover, say so; don't invent an API.

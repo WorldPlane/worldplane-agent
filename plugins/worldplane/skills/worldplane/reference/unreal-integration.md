@@ -33,7 +33,8 @@ Enable them in the `.uproject` (both plugins are in the Networking category and 
 
 - `WorldPlane` (`Version` 1 in its `.uplugin`) has three runtime modules: **WorldPlaneCore** (settings, entities, coordinator, telemetry, placed actors, events), **WorldPlaneIris** (handoff, ghosts, owner calls, restore providers, the handle generator) and **WorldPlaneProxy** (the gateway, per-player relevancy). It enables the engine plugins `Iris`, `MultiServerReplication` and `OnlineSubsystemUtils` itself.
 - `WorldPlaneGAS` is off by default (`EnabledByDefault: false`). It needs `WorldPlane` and `GameplayAbilities`, which it enables. Add it only if the game uses GAS.
-- **The native library.** WorldPlaneIris loads `wp_runtime` from `Plugins/WorldPlane/Binaries/ThirdParty/WPRuntime/`: `Win64/wp_runtime.dll` (editors and Windows servers) and `Linux/x86_64-unknown-linux-gnu/libwp_runtime.so` (Linux servers). It is in the download and staged into packaged servers by itself; client targets build without it. If it is missing, a server or editor build stops with `WorldPlane: ... is missing.` Re-copy the plugin from the download rather than building anything.
+- **The native library.** WorldPlaneCore loads the shared `wp_runtime` library for transport and the gateway from `Plugins/WorldPlane/Binaries/ThirdParty/WPRuntime/`: `Win64/wp_runtime.dll` (editors and Windows servers) and `Linux/x86_64-unknown-linux-gnu/libwp_runtime.so` (Linux servers). It is in the download and staged into packaged servers by itself; client targets build without it. If it is missing, a server or editor build stops with `WorldPlane: ... is missing.` Re-copy the plugin from the download rather than building anything.
+- **Distribution boundary.** Customers compile only the Unreal adapter. No Rust toolchain is required. Keep plugin sources and the supplied native libraries together; a mismatched ABI is rejected. The entire bundle excludes internal tests, fixtures, fault-injection hooks, debug symbols and implementation notes. All distributed source/header/build-rule comments are removed except legal notices, including comments in Public and ThirdParty headers. Use the published API/usage reference and explicit editor tooltips for integration.
 - Regenerate project files and build the editor target once so the plugin modules compile with the project. (An agent should not start an Unreal build or the editor without the user's go-ahead: say what to build and let them run it.)
 
 ## 2. Module dependencies (`Build.cs`)
@@ -141,6 +142,8 @@ public class MyGameServerTarget : TargetRules
 Match the project's existing `Target.cs` files (their `DefaultBuildSettings`, `IncludeOrderVersion`, `ExtraModuleNames`) rather than this template when they exist.
 
 ## 6. `worldplane check`
+
+The shared scanner also powers the free [Multiplayer Diagnostics editor plugin](diagnostics.md), which adds Blueprint inspection, direct navigation and previewable fixes. The CLI defaults to WorldPlane readiness; `--profile unreal` selects general checks. WorldPlane dependency/configuration fixes require an installed SDK. Both callers retain recovery copies and reject stale or read-only files before applying changes.
 
 ```
 worldplane check path/to/MyGame          # or path/to/MyGame.uproject
