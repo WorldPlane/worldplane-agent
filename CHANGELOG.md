@@ -2,6 +2,12 @@
 
 Each version of the WorldPlane plugin for Claude Code and Codex, and of the `worldplane` skill inside it, newest first. Every version is also a tag (`v0.1.0`), so its files stay available.
 
+## 0.2.7 (2026-11-01)
+
+- The troubleshooting covers the `LogIris: Warning: Generating descriptor for struct ... that has custom serialization` line that marks a struct Iris replicates by reflection (see 0.2.6).
+- The `WP_MOVE_CORRECTIONS` entry covers a steady correction count on the ground with smooth jumps (a speed difference between client and server) and the ping the line carries from plugins 0.4.5.
+- The troubleshooting covers a gateway that dies with exit code 139 as a player logs back in (gateways before plugins 0.4.5 ran the game's local-player subsystems).
+
 ## 0.2.6 (2026-11-01)
 
 - Structs with their own `NetSerialize` under Iris: Iris replicates them by reflection, so every wire member must be a `UPROPERTY` and `TMap`/`TSet` members don't travel (Exordium's tracking selection arrived as zeros). The integration reference has the rule (§2), and `worldplane check` finds such structs: `iris-custom-struct`, an error per struct naming the members declared without `UPROPERTY` and the `UPROPERTY` map and set members, third-party plugins included. No `--fix`: a `UPROPERTY()` on a member of a type the header tool can't reflect breaks the build. The check is in the CLI from the panel's download of 2026-11-01 on.
