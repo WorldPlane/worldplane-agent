@@ -80,12 +80,14 @@ Agents send users to the panel to subscribe rather than calling checkout.
 | `POST /v1/tenants/T/projects` | admin | `{"slug","name"}` | 201 project. 409 if it exists |
 | `GET $B/environments` | viewer | | `[Environment]` |
 | `POST $B/environments` | admin | `{"slug","name","region","max_per_hour"?,"zone":Zone}` | 201 Environment (state `stopped`). 400 for a bad slug, an unknown region, `smoke`, or a bad zone; 404 for an unknown project |
-| `GET $B/environments/E` | viewer | | `{"environment":Environment,"zone":{...},"players":{"accounts","public_key","sign_up","sign_in"}}` |
-| `PATCH $B/environments/E` | admin | any of `{"name","max_per_hour" (null removes it),"zone":Zone (whole)}`; other fields are refused | Environment. A running zone takes it at its next deploy; the region never changes |
-| `POST $B/environments/E/deploy` | operator; developer on `dev`/`test` | `{"build":"<id>"}` | `{"zone":{...}}`, state `running`. 404 for an unknown environment or build; 409 if the build isn't `ready` or a `{env:NAME}` secret is missing; 402 for no subscription, an unpaid invoice or the spend limit; 500 `the zone did not start: ...` (state `failed`) |
+| `GET $B/environments/E` | viewer | | `{"environment":Environment,"zone":{...},"players":{"accounts","public_key","sign_up","sign_in"},"updates":{"policy","pending","applied","next_window"}}` |
+| `PATCH $B/environments/E` | admin | any of `{"name","max_per_hour" (null removes it),"zone":Zone (whole),"updates":UpdatePolicy}`; other fields are refused | Environment. A running zone takes it as its update policy allows; the region never changes. 400 for a bad window |
+| `POST $B/environments/E/deploy` | operator; developer on `dev`/`test` | `{"build":"<id>","when"?:"now"\|"later"}` | now (default): `{"zone":{...}}`, state `running`, everything pending applied. later: `{"zone":null,"pending":[...]}`, nothing restarts; 409 for a pinned zone or one not running or sleeping. 404 for an unknown environment or build; 409 if the build isn't `ready` or a `{env:NAME}` secret is missing; 402 for no subscription, an unpaid invoice or the spend limit; 500 `the zone did not start: ...` (state `failed`) |
 | `POST $B/environments/E/stop` | operator; developer on `dev`/`test` | | 204, state `stopped` |
 
-**Environment**: `{"tenant","project","slug","name","region","max_per_hour","zone":Zone,"build","state"}`. `state` is `stopped`, `starting`, `running`, `sleeping` or `failed`. `build` is the id it runs.
+**Environment**: `{"tenant","project","slug","name","region","max_per_hour","zone":Zone,"build","state","updates":UpdatePolicy,"applied"}`. `state` is `stopped`, `starting`, `running`, `sleeping` or `failed`. `build` is the id set for it (a build deployed `later` is here before it runs; `applied.build` is what runs).
+
+**UpdatePolicy** (ADR 0028): when pending changes (a build deployed `later`, `zone`, secrets, WorldPlane's coordinator) reach the running zone. `{"mode":"automatic"}` (default): when it has no players, or at its next wake. `{"mode":"window","day":"tue","start":"09:00","minutes":60}`: also in that weekly UTC window, even with players (`day` `mon`..`sun`, 15 to 1440 minutes). `{"mode":"pinned"}`: only at a deploy now; it wakes as deployed. A deploy now always applies everything.
 
 **Zone** (defaults in brackets):
 ```json
@@ -121,7 +123,7 @@ Answers never contain a value.
 | `PUT $B/environments/E/secrets/{NAME}` | admin; operator/developer on `dev`/`test` | `{"value":"..."}` (1 byte to 4 KiB, no NUL) | 201 new, or 200 replaced: `{"name","updated"}`. 400 for a bad name (1 to 64 of `A-Z 0-9 _`, starting with a letter) or one starting `WP_` |
 | `DELETE $B/environments/E/secrets/{NAME}` | as PUT | | 204; 404 if there is none |
 
-Changes reach servers at the next deploy (or when a sleeping zone wakes).
+Changes reach servers when the zone next starts: a deploy, a wake, or as its update policy allows.
 
 ## Builds
 

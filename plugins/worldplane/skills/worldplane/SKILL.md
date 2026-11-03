@@ -67,7 +67,7 @@ For "upgrade WorldPlane", "update the plugin" or "are we on the latest version",
 
 1. **Never print, log, echo or commit a token.** That includes session tokens, API keys (`wpk_...`) and secret values. Don't put them in a command line, a file in the repository, a URL or your reply. Don't `cat` the CLI's session file. Use the helper scripts or the CLI; they read the token themselves.
 2. **Ask the user first, and wait for a yes, before anything that costs money or affects players.** Name the exact tenant/project/environment and build. This covers:
-   - deploying, redeploying or rolling back (servers start and are billed; players on a running zone are disconnected);
+   - deploying, redeploying or rolling back (servers start and are billed; players on a running zone are disconnected, unless the build is deployed `later`);
    - stopping a zone (players are disconnected);
    - waking a sleeping zone (servers start and are billed);
    - uploading a build;
@@ -112,7 +112,8 @@ Check who you are with `GET /v1/me`. It returns the account (null for a key), `a
 | Usage and spend; the audit log | `get_usage`; `get_audit_log` |
 | A new environment | `create_environment` |
 | Upload a build | `start_build_upload`, then a PUT outside the conversation, then `finish_build_upload` ([Upload a build](#upload-a-build)) |
-| Deploy, roll back | `deploy`, `roll_back` |
+| Deploy (now or `later`), roll back | `deploy`, `roll_back` |
+| When changes reach a running zone | `set_update_policy` (and `updates` in `get_environment`) |
 | Stop, wake | `stop_zone`, `wake_zone` |
 
 Errors come back as the API's sentence with its status, such as `... (402)`; the rules below apply to them as to the API's. The tools have nothing for members, API keys, billing or deleting: those stay with the user, in the panel. Rule 2 applies to the acting tools just as to the CLI: say what will happen and wait for a yes. Your client may ask the user too.
@@ -186,7 +187,7 @@ Below, `T/P/E` is tenant/project/environment, and `$B` is `/v1/tenants/T/project
 
 ### Deploy, roll back
 1. `GET $B/builds/{id}` must be `ready` (otherwise 409).
-2. Tell the user what will happen ("deploy build X (label) to T/P/E; servers start and are billed; players on it now are disconnected") and wait for a yes.
+2. Tell the user what will happen ("deploy build X (label) to T/P/E; servers start and are billed; players on it now are disconnected") and wait for a yes. When players are on it, offer `later` (`worldplane deploy ... --later`, MCP `deploy` with `when: later`): the build goes out as the environment's update policy allows (when empty, at its next wake, or in its maintenance window), and nobody is disconnected now. A pinned environment takes only now. `get_environment` / `GET .../environments/E` shows `updates.pending`; `set_update_policy` (or `worldplane env update --updates automatic|pinned`, `--window tue@09:00/60`) chooses the policy.
 3. The `deploy` tool, `worldplane deploy T/P/E <id>`, or `POST $B/environments/E/deploy {"build":"<id>"}`. The answer has the zone.
 4. Rolling back is a deploy of an older `ready` build. The `roll_back` tool finds the one deployed before the current build by itself.
 5. A 409 that names a missing secret means a server argument uses `{env:NAME}` and the environment has no `NAME`. Ask the user to set it (`worldplane env secret set T/P/E NAME`; the user types the value). Don't invent a value.
@@ -215,7 +216,7 @@ Below, `T/P/E` is tenant/project/environment, and `$B` is `/v1/tenants/T/project
 - `GET /v1/tenants/T/audit?limit=100&before=<seq>`: who did what, newest first. Owners and admins only.
 
 ### Secrets
-Hosted servers and gateways get each environment secret as a process variable under its own name at the next deploy or wake. In Unreal use `FPlatformMisc::GetEnvironmentVariable(TEXT("API_TOKEN"))`; no server argument is needed. Keep values out of packaged INIs. Legacy `{env:NAME}` argument substitution is available for integrations that require it; it places the value in launch arguments. Local processes retain their inherited environment. The value is set by the user: have them run `worldplane env secret set T/P/E NAME`, which asks for it unshown. Never ask for the value in chat, and never put it in a command. Listing (`worldplane env secret list`, `GET .../secrets`) shows names and times, never values. Changes take effect at the next deploy.
+Hosted servers and gateways get each environment secret as a process variable under its own name when the zone next starts (a deploy, a wake, or as its update policy allows). In Unreal use `FPlatformMisc::GetEnvironmentVariable(TEXT("API_TOKEN"))`; no server argument is needed. Keep values out of packaged INIs. Legacy `{env:NAME}` argument substitution is available for integrations that require it; it places the value in launch arguments. Local processes retain their inherited environment. The value is set by the user: have them run `worldplane env secret set T/P/E NAME`, which asks for it unshown. Never ask for the value in chat, and never put it in a command. Listing (`worldplane env secret list`, `GET .../secrets`) shows names and times, never values. A running zone takes changes as its update policy allows (when empty, at its next wake, in its window, or at a deploy now).
 
 ### Team and CI keys
 - Members: `GET/POST /v1/tenants/T/members`, `DELETE /v1/tenants/T/members/{email}` (owner or admin; only owners grant or remove owners). Someone without an account is invited, and gets the role when they sign up.

@@ -2,6 +2,10 @@
 
 Each version of the WorldPlane plugin for Claude Code and Codex, and of the `worldplane` skill inside it, newest first. Every version is also a tag (`v0.1.0`), so its files stay available.
 
+## 0.2.13 (2026-11-03)
+
+- Update policies: an environment chooses when changes reach its running zone. `automatic` (the default) waits until the zone has no players or wakes; `window` also applies them in a weekly UTC window; `pinned` waits for your next deploy. A build can be deployed `later` (`worldplane deploy --later`, MCP `deploy` with `when: later`) so nobody is disconnected now. The skill offers `later` when players are on a zone, and describes `set_update_policy`, `worldplane env update --updates/--window` and the `updates` status. Needs the control plane deployed on or after this day.
+
 ## 0.2.12 (2026-11-02)
 
 - A `fleet_member_failed` event in a zone's history (`get_zone_events`, `GET .../coordinator/v1/history`) now carries the dead server's or gateway's last log lines in `lines`, with the game's crash callstack when it crashed; the API reference describes it. Needs the control plane deployed on or after this day.

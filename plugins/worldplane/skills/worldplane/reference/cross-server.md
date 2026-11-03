@@ -79,7 +79,7 @@ So:
 - The plugin has **no save system**. It carries state between servers (SaveGame properties, `OnGather`/`OnApply` blobs, restore providers) and keeps crash-recovery checkpoints in the coordinator, but anything that must outlive the zone belongs in the game's own backend.
 - **The persistence fence.** A game that saves must make sure the old server writes nothing for a player after the handoff, or a late save overwrites the new server's. Refuse the move in `CanHandOff` while a save is in flight; flush in `OnGather`; write nothing after.
 - **Restore providers** carry a system's player state in memory so the new server reads nothing from the backend. `Gather` also runs every `wp.CheckpointSeconds` (2 s) with `Context.bCheckpoint` set, for crash recovery: keep it cheap and free of side effects. `OnGather` is not called for checkpoints, so state only `OnGather` carries is lost when a server dies. `Apply` runs before the arriving actors first replicate and must not wait for anything. Use `OnFailed` to fall back to the backend.
-- **Two builds at once** (a rolling deploy): raise `Version` when a raw provider's format changes, and keep `MinVersion` so the new build reads the old format. `ForStruct` providers tolerate added and removed properties without a new version.
+- **Old and new builds:** raise `Version` when a raw provider's format changes, and keep `MinVersion` so the new build reads what the old one saved (WorldPlane replaces all of a zone's servers together; the old build would refuse the new format with `version_mismatch`). `ForStruct` providers tolerate added and removed properties without a new version.
 
 ## Spawning
 
