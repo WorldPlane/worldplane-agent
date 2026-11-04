@@ -2,6 +2,10 @@
 
 Each version of the WorldPlane plugin for Claude Code and Codex, and of the `worldplane` skill inside it, newest first. Every version is also a tag (`v0.1.0`), so its files stay available.
 
+## 0.2.17 (2026-11-04)
+
+- Handoffs, from plugins 0.4.11: values replicated only to the owning client stay behind, and the new `HandoffCarryExclude` setting names others. The cross-server reference explains why owner-only "loaded" flags must not travel. Troubleshooting covers a system that arrives "loaded" but empty after a crossing, the `WP_HANDOFF_CARRY excluded=` line, and checkpoint refusals that no longer warn. The integration reference lists `bHandoffCarriesReplicatedValues` and `HandoffCarryExclude`.
+
 ## 0.2.16 (2026-11-04)
 
 - Logins: from plugins 0.4.10 the gateway joins each login to the server that owns where the player will spawn (where the client's pawn last stood, else the level's player starts, else load), instead of always one server. The cross-server reference says what games must not assume; troubleshooting explains `WP_ADMISSION`, `WP_ADMISSION_MISS` and `WP_RETURN_POINT`, and a zone where every login lands on one server and is handed off right after.
