@@ -248,6 +248,8 @@ FParse::Value(FCommandLine::Get(), TEXT("ApiToken="), Token);
 | `-WPTransportPort=N` | The port servers use to talk to each other (handoffs, ghosts, forwarded calls). |
 | `-WPSessionKey=KEY` | The zone's shared key; servers accept the gateway's own connection only with it. |
 | `wp.proxy.Enabled=1` | Makes the process a gateway. |
+| `wp.proxy.Admission=0` | Gateway: join every login to one backend index (`-ProxyClientPrimaryGameServer`), as before plugins 0.4.10, instead of the server that owns the player's spawn point. For comparisons only. |
+| `-WPReturnSlot=NAME` | Client: keep its return point in its own file, for several clients sharing one machine's `Saved` folder (bots). |
 | `-WPPeers=host:port,...` | Only without a coordinator: the other servers' transport addresses. |
 
 ## 10. Push and deploy

@@ -89,6 +89,7 @@ namespace WorldPlane
     // Server side, in the game's PreLogin: true for the gateway's own connection (?Proxy with the zone's session key).
     bool IsTrustedGatewayLogin(const UWorld* World, const FString& Options);
     // Gateway side: the options to add to a login it makes (session key; forwarded client options for a player).
+    // Client side (plugins 0.4.10): where the client's pawn last stood (WPReturn, WPReturnMap), for the gateway's admission.
     FString GetGatewayLoginOptions(const UWorld* World, const FUniqueNetIdRepl& PlayerId);
 }
 class UWPLocalPlayer : public ULocalPlayer { virtual FString GetGameLoginOptions() const override; };
