@@ -87,7 +87,7 @@ Agents send users to the panel to subscribe rather than calling checkout.
 
 **Environment**: `{"tenant","project","slug","name","region","max_per_hour","zone":Zone,"build","state","updates":UpdatePolicy,"applied"}`. `state` is `stopped`, `starting`, `running`, `sleeping` or `failed`. `build` is the id set for it (a build deployed `later` is here before it runs; `applied.build` is what runs).
 
-**UpdatePolicy** (ADR 0028): when pending changes (a build deployed `later`, `zone`, secrets, WorldPlane's coordinator) reach the running zone. `{"mode":"automatic"}` (default): when it has no players, or at its next wake. `{"mode":"window","day":"tue","start":"09:00","minutes":60}`: also in that weekly UTC window, even with players (`day` `mon`..`sun`, 15 to 1440 minutes). `{"mode":"pinned"}`: only at a deploy now; it wakes as deployed. A deploy now always applies everything.
+**UpdatePolicy** (ADR 0028): when pending changes (a build deployed `later`, `zone`, secrets, WorldPlane's coordinator) reach the running zone. `{"mode":"automatic"}` (default): when it has no players, or at its next wake. `{"mode":"window","day":"tue","start":"09:00","minutes":60,"notice":10}`: also in that weekly UTC window, even with players (`day` `mon`..`sun`, 15 to 1440 minutes). Players are warned first: `notice` (0 to 60, default 10) minutes before the window opens the zone's servers raise `UWPMaintenanceSubsystem::OnMaintenanceNotice`, and the zone restarts as it opens; a change pending later gets its full notice if it still ends in the window. `{"mode":"pinned"}`: only at a deploy now; it wakes as deployed. A deploy now always applies everything.
 
 **Zone** (defaults in brackets):
 ```json

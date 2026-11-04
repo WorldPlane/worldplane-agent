@@ -108,6 +108,12 @@ So:
 - `GetServerWorldTimeSeconds` follows the replicating server's clock, so it jumps once when the GameState moves. Use it for client display, not for timestamps that must compare across servers.
 - `PlayerArray` on a client is complete after a move (the new GameState gathers the client's PlayerStates).
 
+## Maintenance notices
+
+- A hosted zone under a `window` update policy is restarted in its window even with players on it. `notice` minutes before (default 10), every zone server's `UWPMaintenanceSubsystem` raises `OnMaintenanceNotice(SecondsLeft)`, again at 60, 30, 15, 10, 5, 2 and 1 minutes and 30 and 10 seconds, and `OnMaintenanceWithdrawn` if it is called off. `IsMaintenanceScheduled()` / `GetMaintenanceSecondsLeft()` read it any time (for a player joining mid-notice).
+- **Each server warns its own players** (a client RPC per player controller, or a PlayerState property). Not a GameState multicast: only one server's GameState replicates. Clients and gateways never raise the events.
+- Plugins before 0.4.8 aren't told; the zone restarts at the same time anyway.
+
 ## Clients and cosmetics
 
 - **No NetMulticast from actors without an owning player.** The gateway drops them. Use replicated state, or `UWPEventsComponent::Emit` / `OnEvent` for one-off cosmetic events (last 8 kept). `worldplane check` lists every `NetMulticast`. Multicasts on actors a player owns (their pawn) are not dropped by that rule. **Uncertain** whether they reach other clients behind the gateway the same as on one server; prefer events or replicated state there too.

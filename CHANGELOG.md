@@ -2,6 +2,10 @@
 
 Each version of the WorldPlane plugin for Claude Code and Codex, and of the `worldplane` skill inside it, newest first. Every version is also a tag (`v0.1.0`), so its files stay available.
 
+## 0.2.14 (2026-11-03)
+
+- Maintenance notices: a `window` policy has `notice` (0 to 60 minutes, default 10; `worldplane env update --notice`, MCP `set_update_policy` with `notice`). Before the window restarts a zone with players, its servers raise `UWPMaintenanceSubsystem::OnMaintenanceNotice(SecondsLeft)`, and the zone restarts as the window opens. The cross-server reference says how a game warns its players (each server its own; not a GameState multicast). Needs the control plane deployed on or after this day and plugins 0.4.8.
+
 ## 0.2.13 (2026-11-03)
 
 - Update policies: an environment chooses when changes reach its running zone. `automatic` (the default) waits until the zone has no players or wakes; `window` also applies them in a weekly UTC window; `pinned` waits for your next deploy. A build can be deployed `later` (`worldplane deploy --later`, MCP `deploy` with `when: later`) so nobody is disconnected now. The skill offers `later` when players are on a zone, and describes `set_update_policy`, `worldplane env update --updates/--window` and the `updates` status. Needs the control plane deployed on or after this day.
