@@ -2,6 +2,13 @@
 
 Each version of the WorldPlane plugin for Claude Code and Codex, and of the `worldplane` skill inside it, newest first. Every version is also a tag (`v0.1.0`), so its files stay available.
 
+## 0.2.18 (2026-11-04)
+
+- Crossings, from plugins 0.4.12: an entity's new actor exists before its old one goes, on both servers (ADR 0030).
+  - The cross-server reference explains `WorldPlane::OnActorReplaced` and `GetReplacement`, and what the plugin moves for you: AI focus and Blackboard keys.
+  - Troubleshooting covers NPCs that give up a fight when a player crosses, damage refused because `FindGhost` (now deprecated) finds stand-ins only, and the new `WP_ACTOR_REPLACED`, `WP_GHOST_ADD ... (departed)` and `WP_GHOST_REMOVE` lines.
+  - The API reference documents the event.
+
 ## 0.2.17 (2026-11-04)
 
 - Handoffs, from plugins 0.4.11: values replicated only to the owning client stay behind, and the new `HandoffCarryExclude` setting names others. The cross-server reference explains why owner-only "loaded" flags must not travel. Troubleshooting covers a system that arrives "loaded" but empty after a crossing, the `WP_HANDOFF_CARRY excluded=` line, and checkpoint refusals that no longer warn. The integration reference lists `bHandoffCarriesReplicatedValues` and `HandoffCarryExclude`.

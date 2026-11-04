@@ -170,11 +170,39 @@ namespace WorldPlane
 
 ```cpp
 bool ForwardDamage(const AActor* Target, float Amount, const AActor* Instigator, const FString& DamageType = FString());
-AWPGhostActor* FindGhost(uint64 EntityId) const;     // a stand-in only
-AActor* FindGhostActor(uint64 EntityId) const;       // either kind
+AActor* FindGhostActor(uint64 EntityId) const;       // either kind: a copy of the entity's class or a stand-in
+AWPGhostActor* FindGhost(uint64 EntityId) const;     // deprecated (0.4.12): a stand-in only
 ```
 
-`ForwardDamage` returns true when `Target` is a ghost and the damage went to its owner (raised there as `OnRemoteDamage`), false when the caller applies it locally.
+`ForwardDamage` returns true when `Target` is a ghost and the damage went to its owner (raised there as `OnRemoteDamage`), false when the caller applies it locally. To find the attacker named by `OnRemoteDamage`'s `InstigatorEntityId`, use `FindGhostActor`: NPCs' and players' ghosts are copies of their own class unless `StandInKinds` says otherwise, and `FindGhost` finds stand-ins only, so it returns null for them.
+
+## An entity's actor replaced (`WPActorReplaced.h`, ADR 0030)
+
+```cpp
+DECLARE_MULTICAST_DELEGATE_ThreeParams(FWPOnActorReplaced, uint64 /*EntityId*/, AActor& /*Old*/, AActor& /*New*/);
+namespace WorldPlane
+{
+    FWPOnActorReplaced& OnActorReplaced();
+    AActor* GetReplacement(const AActor& Old);   // while Old is being replaced, until it is destroyed; else nullptr
+}
+```
+
+At a crossing, the actor that stands for an entity on a server changes: on the server it leaves, its ghost takes over from the actor; on the server it reaches, the arriving actor takes over from its ghost. Both are alive when `OnActorReplaced` is raised, before the old one is destroyed. By then the plugin has moved the engine's own AI references on that server to the new actor: AI controllers' focus (every priority) and their Blackboards' object keys. Move what the game keeps by actor pointer (a threat list, a current target, a StateTree parameter) in a handler:
+
+```cpp
+// A world subsystem's Initialize, on zone servers
+Replaced = WorldPlane::OnActorReplaced().AddUObject(this, &UMyCombatSubsystem::HandleReplaced);
+
+void UMyCombatSubsystem::HandleReplaced(uint64 EntityId, AActor& Old, AActor& New)
+{
+    for (UMyThreatComponent* Threat : ThreatComponents)
+    {
+        Threat->ReplaceSource(&Old, &New);   // keep the threat value, point it at New
+    }
+}
+```
+
+Code that lets go of an actor in its `OnDestroyed` or `EndPlay` (a third-party threat table) can ask `GetReplacement(Old)` there instead: non-null means the entity is still here under another actor. `WP_ACTOR_REPLACED entity=… Old -> New (departed|arrived) ai_refs=N` logs each replacement.
 
 ## Owner calls (`WPOwnerCalls.h`)
 

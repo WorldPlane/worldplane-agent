@@ -107,7 +107,12 @@ The plugin reports what it finds about the build (`WorldPlane::Warn`) to the coo
 | `WorldPlane GhostClass <class> did not load; using AWPGhostActor` / `WP_GHOST class <path> did not load; a stand-in instead` | The configured ghost class, or the entity's own class, isn't loadable on this server. |
 | `WP_GHOST_ALIAS entity=<id> has no Iris handle; references to it stay unresolved here` | References to that entity arrive as null on this server. |
 | Damage from C++ to a player or NPC on the other server does nothing | The pawn's `TakeDamage` lacks `WorldPlane::ForwardDamageToOwner` (run `worldplane check --fix`). |
+| Damage that `OnRemoteDamage` brings is refused because "the attacker has no ghost here", but the attacker stands next to the target | The handler looks the attacker up with `FindGhost`, which finds stand-ins only; NPCs' and players' ghosts are copies of their own class by default. Use `FindGhostActor(InstigatorEntityId)`. `FindGhost` is deprecated from 0.4.12. |
 | An interaction works near its own server and fails across a border | The function runs on a ghost: see `WP_LOST_WRITE` and owner calls above. |
+| NPCs give up a fight (go home, reset, evade) the moment the player they fight crosses the border | The NPC holds its target by actor pointer and lets go when that actor is destroyed. At a crossing the player's actor on each server gives way to another (`WP_ACTOR_REPLACED`). The plugin moves AI controllers' focus and Blackboard object keys; game-kept targets and threat tables must move in a `WorldPlane::OnActorReplaced` handler, or the code that drops an actor in `OnDestroyed` must check `WorldPlane::GetReplacement` first (ADR 0030). |
+| `WP_ACTOR_REPLACED entity=<id> <old> -> <new> (departed\|arrived) ai_refs=<n>` | An entity's actor here gave way to another: `departed`, its ghost took over from the actor that left; `arrived`, the arriving actor took over from its ghost. `ai_refs` is how many AI focus and Blackboard references the plugin moved. |
+| `WP_GHOST_ADD entity=<id> ... (departed)` | The ghost made from an entity as it left this server, so something stands for it at once. |
+| `WP_GHOST_REMOVE entity=<id> reason=unlisted from server <n>` / `reason=arrived` | A ghost went: its owner stopped listing it (it left the band or the owner), or the arriving entity took over from it. |
 
 ## Spawners and placed actors
 
