@@ -2,6 +2,10 @@
 
 Each version of the WorldPlane plugin for Claude Code and Codex, and of the `worldplane` skill inside it, newest first. Every version is also a tag (`v0.1.0`), so its files stay available.
 
+## 0.2.15 (2026-11-03)
+
+- Troubleshooting: a zone that never sleeps because players who crossed a border and then left are still counted (the gateway logged `Cannot send NMT_CloseChildConnection`). Fixed in plugins 0.4.9; rebuild and deploy the server package.
+
 ## 0.2.14 (2026-11-03)
 
 - Maintenance notices: a `window` policy has `notice` (0 to 60 minutes, default 10; `worldplane env update --notice`, MCP `set_update_policy` with `notice`). Before the window restarts a zone with players, its servers raise `UWPMaintenanceSubsystem::OnMaintenanceNotice(SecondsLeft)`, and the zone restarts as the window opens. The cross-server reference says how a game warns its players (each server its own; not a GameState multicast). Needs the control plane deployed on or after this day and plugins 0.4.8.
