@@ -2,6 +2,12 @@
 
 Each version of the WorldPlane plugin for Claude Code and Codex, and of the `worldplane` skill inside it, newest first. Every version is also a tag (`v0.1.0`), so its files stay available.
 
+## 0.2.19 (2026-11-04)
+
+- Crossings, from plugins 0.4.13: the ghost a crossing leaves behind stays until its new owner lists it, and always has the entity's network handle.
+  - Troubleshooting explains the `WP_GHOST_REMOVE ... reason=unlisted` that followed a departure within milliseconds before 0.4.13, the `WP_HANDLE_COLLISION` such a ghost could log when game code named it in an RPC, and the new `WP_GHOST_TIMEOUT ... (departed, never listed)`.
+  - The cross-server reference and troubleshooting say to move every list kept by actor at a crossing: one left behind, such as an "engaged with" list the combat code ends a fight from, still ends the fight.
+
 ## 0.2.18 (2026-11-04)
 
 - Crossings, from plugins 0.4.12: an entity's new actor exists before its old one goes, on both servers (ADR 0030).
