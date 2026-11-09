@@ -2,6 +2,12 @@
 
 Each version of the WorldPlane plugin for Claude Code and Codex, and of the `worldplane` skill inside it, newest first. Every version is also a tag (`v0.1.0`), so its files stay available.
 
+## 0.2.20 (2026-11-09)
+
+- Gameplay tags, from plugins 0.4.14: tag events a client registers on an ability system before the actor's first replicated state now fire when the tag arrives.
+  - Troubleshooting explains the symptom (an NPC whose state the client presents from a tag keeps animating on clients only; tags a client added locally vanish), the cause under UE 5.8's Iris and the new `WP_GAS_TAG_COUNT_FRAGMENT installed` line, and says game code must not re-read tag counts to work around it.
+  - The cross-server reference says tag events on clients work as on one server.
+
 ## 0.2.19 (2026-11-04)
 
 - Crossings, from plugins 0.4.13: the ghost a crossing leaves behind stays until its new owner lists it, and always has the entity's network handle.
